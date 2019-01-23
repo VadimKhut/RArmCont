@@ -1,7 +1,7 @@
 #include <Servo.h>
 #include <IRremote.h>
-#include <SdFat.h>
-#include <TM1637Display.h>
+#include <SdFat.h>            //  https://github.com/greiman/SdFat
+#include <TM1637Display.h>    //  https://github.com/avishorp/TM1637
 
 /*
    The Arduino connections are as follows:
