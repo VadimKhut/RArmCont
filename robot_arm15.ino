@@ -3,6 +3,34 @@
 #include <SdFat.h>
 #include <TM1637Display.h>
 
+/*
+   The Arduino connections are as follows:
+
+    D2 - joystick select button
+    D3 - IR diode
+    D4 - rotating base servo
+    D5 - claw servo
+    D6 - vertical arm motion servo
+    D7 - horizontal arm motion servo
+    D8 - LCD CLK
+    D9 - LCD DIO
+    D10 - SD card CS
+    D11 - SD card MOSI
+    D12 - SD card MISO
+    D13 - SD card CK
+    A0 - record button
+    A1 - playback button
+    A2 - unused
+    A3 - potentiometer
+    A4 - close claw button
+    A5 - open claw button
+    A6 - joystick vertical
+    A7 - joystick horizontal
+
+*/
+
+
+
 // Note that A6 and A7 are analog input only on Arduino Mini.
 
 // LED module connection pins (Digital Pins)
