@@ -31,7 +31,6 @@
 
 
 
-// Note that A6 and A7 are analog input only on Arduino Mini.
 
 // LED module connection pins (Digital Pins)
 #define CLK 8
