@@ -20,7 +20,7 @@
     D13 - SD card CK
     A0 - record button
     A1 - playback button
-    A2 - unused
+    A2 - 
     A3 - potentiometer
     A4 - close claw button
     A5 - open claw button
@@ -38,24 +38,25 @@
 #define DIO 9
 
 TM1637Display display(CLK, DIO);
-int k;
-uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
- 
+
 Servo base;
 Servo claw;
 Servo vArm;
 Servo hArm;
 
+int k;
+uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
+ 
 // SD shield
 const int chipSelect = 10;
 SdFat sd;                    // CS/MOSI/MISO/CK = 10/11/12/13
 SdFile myFile;
 char name[] = "ARM000.CSV"; // Will be incremented to create a new file each run.
 
-// For control of the arm servos
-const int VERT = A6; // analog
-const int HORIZ = A7; // analog
-const int SEL = 2; // digital
+// joystick for control of the arm servos
+const int VERT = A6;   // analog
+const int HORIZ = A7;  // analog
+const int SEL = 2;     // digital
 
 // For turning the base
 const int potPin = A3;
@@ -85,7 +86,7 @@ int playbackProgram = -1;
 int maxProgram = 0;
 
 // IR stuff:
-#define NUM_BUTTONS 9 // The remote has 9 buttons
+#define NUM_BUTTONS 9   // The remote has 9 buttons
 const uint16_t BUTTON_POWER = 0xD827; // i.e. 0x10EFD827
 const uint16_t BUTTON_A = 0xF807;
 const uint16_t BUTTON_B = 0x7887;
@@ -95,21 +96,21 @@ const uint16_t BUTTON_DOWN = 0x00FF;
 const uint16_t BUTTON_LEFT = 0x10EF;
 const uint16_t BUTTON_RIGHT = 0x807F;
 const uint16_t BUTTON_CIRCLE = 0x20DF;
-/* Connect the output of the IR receiver diode to pin 11. */
+/* Connect the IR receiver diode to pin 3. */
 int RECV_PIN = 3;
 /* Initialize the irrecv part of the IRremote  library */
 IRrecv irrecv(RECV_PIN);
-decode_results results; // This will store our IR received codes
-uint16_t lastCode = 0; // This keeps track of the last code RX'd
+decode_results results;  // This will store our IR received codes
+uint16_t lastCode = 0;   // This keeps track of the last code RX'd
 
 
-void setup()
-{
+void setup(){
+   
   // make the SEL line an input
+  // Prior to Arduino 1.0.1, it was possible to configure the internal pull-ups in the following manner:
   pinMode(SEL,INPUT);
-  // turn on the pull-up resistor for the SEL line (see http://arduino.cc/en/Tutorial/DigitalPins)
   digitalWrite(SEL,HIGH);
-
+  // turn on the pull-up resistor (see http://arduino.cc/en/Tutorial/DigitalPins)
   pinMode(blackButton,INPUT_PULLUP);
   pinMode(whiteButton,INPUT_PULLUP);
 
@@ -133,8 +134,8 @@ void setup()
   irrecv.enableIRIn(); // Start the receiver
 }
 
-void writeCommand(char inCommand, int inValue)
-{
+void writeCommand(char inCommand, int inValue){
+   
   if (mode == 'R') {
     Serial.print("writeCommand: ");
     Serial.print(inCommand);
@@ -150,8 +151,8 @@ void writeCommand(char inCommand, int inValue)
   }
 }
 
-void startRecord()
-{
+void startRecord(){
+   
   // Look at the SD card and figure out the new file name to use.
   // Then initialize the file.
   if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
@@ -187,11 +188,12 @@ void startRecord()
   }
 }
 
-void startSelect() 
-{
+void startSelect(){
+   
   if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
     Serial.println ("Cannot access local SD card.");
   }
+   
   mode = 'S';
   // Find maximum program number
   for (uint8_t i = 0; i < 1000; i++) {
@@ -200,6 +202,7 @@ void startSelect()
     maxProgram = i-1;
     break;
   }
+
   // Get program to playback
   if (playbackProgram == -1 ) {
     // Find latest recorded program and use that.
@@ -210,6 +213,7 @@ void startSelect()
       break;
     }
   }
+  
   setName(playbackProgram);
   setDisplay('S');
   delay(500);
@@ -222,20 +226,23 @@ void setName(int i){
 }
 
 void setDisplay(char inMode) {
+
   display.setBrightness(7); // Turn on
-  switch (inMode) {
-    case 'R':
-      data[0] = 0b01010000;
-      break;
-    case 'P':
-      data[0] = 0b01110011;
-      break;
-    case 'S':
-      //data[0] = 0b01101101;
-      // Changed this from S to C since S looks just like % on LED.
-      data[0] = 0b00111001;
-      break;
+ 
+   switch (inMode) {
+     case 'R':
+       data[0] = 0b01010000;
+       break;
+     case 'P':
+       data[0] = 0b01110011;
+       break;
+     case 'S':
+       //data[0] = 0b01101101;
+       // Changed this from S to C since S looks just like % on LED.
+       data[0] = 0b00111001;
+       break;
   }
+   
   data[1] = display.encodeDigit((int)name[3]);
   data[2] = display.encodeDigit((int)name[4]);
   data[3] = display.encodeDigit((int)name[5]);
@@ -244,6 +251,7 @@ void setDisplay(char inMode) {
 
 
 void startPlayback(int in_playbackProgram) {
+   
   setName(in_playbackProgram);
   setDisplay('P');
   mode = 'P';
@@ -292,16 +300,15 @@ void startPlayback(int in_playbackProgram) {
 }
 
 
-void loop() 
-{
+void loop() {
+   
   int vertical, horizontal, select;
 
   // First check to see if we need to record or stop.
-  if (!digitalRead(recordButton))
-  {
+  if (!digitalRead(recordButton)) {
+     
     Serial.println("record button press!");
-    if (mode == 'R') 
-    { 
+    if (mode == 'R') { 
       mode = 'N'; 
       // Turn off display
       Serial.println("Turning off display.");
@@ -309,16 +316,14 @@ void loop()
       display.setSegments(data);
       delay(2000);
     }
-    else
-    {
+    else {
       startRecord();
       delay(2000);
     }
   }
 
   // Now check if we need to playback...
-  if (!digitalRead(playbackButton))
-  {
+  if (!digitalRead(playbackButton)) {
     if (mode == 'S') {
       // Selection has been made. Start playback.
       startPlayback(playbackProgram);
@@ -382,8 +387,8 @@ void loop()
     }
   }
   else {
-    if (vertical<300 && vPos<=130) {vPos += 2; writeCommand('V', vPos); }
-    if (vertical>700 && vPos>=18)  {vPos -= 2; writeCommand('V', vPos); }
+    if (vertical <300 && vPos <= 130) {vPos += 2; writeCommand('V', vPos); }
+    if (vertical >700 && vPos >= 18)  {vPos -= 2; writeCommand('V', vPos); }
     vArm.write(vPos);
 
     if (horizontal>700 && hPos<=130) {hPos += 2; writeCommand('H', hPos); }
@@ -392,73 +397,71 @@ void loop()
   }
   
   // IR code
-    if (irrecv.decode(&results)) 
-  {
-    /* read the RX'd IR into a 16-bit variable: */
-    uint16_t resultCode = (results.value & 0xFFFF);
+  if (irrecv.decode(&results)) { 
+  
+      /* read the RX'd IR into a 16-bit variable: */
+      uint16_t resultCode = (results.value & 0xFFFF);
 
-    /* The remote will continue to spit out 0xFFFFFFFF if a 
-     button is held down. If we get 0xFFFFFFF, let's just
-     assume the previously pressed button is being held down */
-    if (resultCode == 0xFFFF)
-      resultCode = lastCode;
-    else
-      lastCode = resultCode;
+      /* The remote will continue to spit out 0xFFFFFFFF if a 
+      button is held down. If we get 0xFFFFFFF, let's just
+      assume the previously pressed button is being held down */
+      if (resultCode == 0xFFFF)
+        resultCode = lastCode;
+      else
+        lastCode = resultCode;
 
-    // This switch statement checks the received IR code against
-    // all of the known codes. Each button press produces a 
-    // serial output, and has an effect on the LED output.
-    switch (resultCode)
-    {
-      case BUTTON_POWER:
-        Serial.println("Power");
-        if (clawPosition>=65) clawPosition -= 5;
-        claw.write(clawPosition);
+      // This switch statement checks the received IR code against
+      // all of the known codes. Each button press produces a 
+      // serial output, and has an effect on the LED output.
+      switch (resultCode) {     
+        case BUTTON_POWER:
+          Serial.println("Power");
+          if (clawPosition >= 65) clawPosition -= 5;
+          claw.write(clawPosition);
+          break;
+        case BUTTON_CIRCLE:
+          Serial.println("Circle");
+          if (clawPosition <= 175) clawPosition += 5;
+          claw.write(clawPosition);
+          break;
+        case BUTTON_B:
+          Serial.println("B");
+          clawPosition = 150;
+          claw.write(clawPosition);
+          break;
+        case BUTTON_A:
+          Serial.println("A");
+          baseIRcontrol = true;
+          if (basePos <= 175) basePos += 2;
+          base.write(basePos);
+          break;
+        case BUTTON_C:
+          baseIRcontrol = true;
+          Serial.println("C");
+          if (basePos >= 65) basePos -= 2;
+          base.write(basePos);
         break;
-      case BUTTON_CIRCLE:
-        Serial.println("Circle");
-        if (clawPosition <=175) clawPosition += 5;
-        claw.write(clawPosition);
-        break;
-      case BUTTON_B:
-        Serial.println("B");
-        clawPosition = 150;
-        claw.write(clawPosition);
-        break;
-      case BUTTON_A:
-        Serial.println("A");
-        baseIRcontrol = true;
-        if (basePos <=175) basePos += 2;
-        base.write(basePos);
-        break;
-      case BUTTON_C:
-        baseIRcontrol = true;
-        Serial.println("C");
-        if (basePos>=65) basePos -= 2;
-        base.write(basePos);
-        break;
-      case BUTTON_RIGHT:
-        if (vPos<=130) vPos += 2;
-        vArm.write(vPos);
-        break;
-      case BUTTON_LEFT:
-        if (vPos>=18) vPos -= 2;
-        vArm.write(vPos);
-        break;
-      case BUTTON_DOWN:
-        if (hPos>=26) hPos -= 2;
-        hArm.write(hPos);
-        break;
-      case BUTTON_UP:
-        if (hPos<=130) hPos += 2;
-        hArm.write(hPos);
-        break;
-      default:
-        Serial.print("Unrecognized code received: 0x");
-        Serial.println(results.value, HEX);
-        break;        
-    }    
-    irrecv.resume(); // Receive the next value
+        case BUTTON_RIGHT:
+          if (vPos <= 130) vPos += 2;
+          vArm.write(vPos);
+          break;
+        case BUTTON_LEFT:
+          if (vPos >= 18) vPos -= 2;
+          vArm.write(vPos);
+          break;
+        case BUTTON_DOWN:
+          if (hPos >= 26) hPos -= 2;
+          hArm.write(hPos);
+          break;
+        case BUTTON_UP:
+          if (hPos <= 130) hPos += 2;
+          hArm.write(hPos);
+          break;
+        default:
+          Serial.print("Unrecognized code received: 0x");
+          Serial.println(results.value, HEX);
+          break;        
+      }    
+      irrecv.resume(); // Receive the next value
   }
-
 }  
