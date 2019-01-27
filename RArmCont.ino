@@ -359,8 +359,8 @@ void loop() {
   if (mode == 'R') delay(15);
   else delay(30);
 
-  if (digitalRead(blackButton) && clawPosition <=175) {clawPosition += 5; writeCommand('C', clawPosition); }
-  if (digitalRead(whiteButton) && clawPosition>=65)   {clawPosition -= 5; writeCommand('C', clawPosition); }
+  if (digitalRead(blackButton) && clawPosition <= 175) {clawPosition += 5; writeCommand('C', clawPosition); }
+  if (digitalRead(whiteButton) && clawPosition >= 65)   {clawPosition -= 5; writeCommand('C', clawPosition); }
   claw.write(clawPosition);
 
   // Full, sudden release of claw when joystick pressed.
@@ -372,13 +372,13 @@ void loop() {
 
   // If we are in "select" mode, use the joystick to select a program
   if (mode == 'S') {
-    if (playbackProgram < maxProgram && horizontal>700) {
+    if (playbackProgram < maxProgram && horizontal > 700) {
       playbackProgram++;
       setName(playbackProgram);
       setDisplay('S');
       delay(500);
     }
-    if (playbackProgram > 1 && horizontal<300) {
+    if (playbackProgram > 1 && horizontal < 300) {
       playbackProgram--;
       setName(playbackProgram);
       setDisplay('S');
@@ -386,12 +386,12 @@ void loop() {
     }
   }
   else {
-    if (vertical <300 && vPos <= 130) {vPos += 2; writeCommand('V', vPos); }
-    if (vertical >700 && vPos >= 18)  {vPos -= 2; writeCommand('V', vPos); }
+    if (vertical < 300 && vPos <= 130) {vPos += 2; writeCommand('V', vPos); }
+    if (vertical > 700 && vPos >= 18)  {vPos -= 2; writeCommand('V', vPos); }
     vArm.write(vPos);
 
-    if (horizontal>700 && hPos<=130) {hPos += 2; writeCommand('H', hPos); }
-    if (horizontal<300 && hPos>=26)  {hPos -= 2; writeCommand('H', hPos); }
+    if (horizontal > 700 && hPos <= 130) {hPos += 2; writeCommand('H', hPos); }
+    if (horizontal < 300 && hPos >= 26)  {hPos -= 2; writeCommand('H', hPos); }
     hArm.write(hPos);
   }
   
