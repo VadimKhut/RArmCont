@@ -173,7 +173,7 @@ void startRecord(){
   }
   else {
     Serial.println("Lighting up display");
-    //myFile.println("time,command,value");    
+    // myFile.println("time,command,value");    
     // Need to first write the initial (current) position
     // of the arm so it can be initialized upon playback.
     myFile.print("0,V,"); myFile.println(vPos);
@@ -335,8 +335,11 @@ void loop() {
   
   vertical = analogRead(VERT); // will be 0-1023
   vertical = 1023-vertical;
+
   horizontal = analogRead(HORIZ); // will be 0-1023
+  
   select = digitalRead(SEL); // will be HIGH (1) if not pressed, and LOW (0) if pressed
+   
   potValue = analogRead(potPin);
 
   // If IR commands for base turning have been issues, disable code to move base to 
