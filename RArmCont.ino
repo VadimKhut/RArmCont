@@ -133,6 +133,13 @@ void setup(){
   irrecv.enableIRIn(); // Start the receiver
 }
 
+
+
+
+
+
+
+
 void writeCommand(char inCommand, int inValue){
    
   if (mode == 'R') {
@@ -297,6 +304,10 @@ void startPlayback(int in_playbackProgram) {
   for(int k = 0; k < 4; k++) data[k] = 0;
   display.setSegments(data);
 }
+
+
+
+
 
 
 void loop() {
