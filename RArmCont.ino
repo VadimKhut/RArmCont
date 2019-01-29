@@ -273,6 +273,7 @@ void startPlayback(int in_playbackProgram) {
   long int commandTimePrev = 0;
 
   ifstream sdin(name);
+   
   if (sdin.is_open()) {
     while (sdin >> commandTime >> c1 >> commandType >> c2 >> commandParam) {
       if (c1 != ',' || c2 != ',') continue;
