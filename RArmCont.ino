@@ -210,7 +210,8 @@ void startSelect(){
   // Find maximum program number
   for (uint8_t i = 0; i < 1000; i++) {
     setName(i);
-    if (sd.exists(name)) continue;
+    if (sd.exists(name)) 
+			continue;
     maxProgram = i-1;
     break;
   }
@@ -220,7 +221,8 @@ void startSelect(){
     // Find latest recorded program and use that.
     for (uint8_t i = 0; i < 1000; i++) {
       setName(i);
-      if (sd.exists(name)) continue;
+      if (sd.exists(name)) 
+				continue;
       playbackProgram = i-1;
       break;
     }
@@ -381,11 +383,18 @@ void loop() {
 
   // Putting in this delay so the robot does not move too fast.
   // If recording, that includes some delay already.
-  if (mode == 'R') delay(15);
+  if (mode == 'R') 
+		delay(15);
   else delay(30);
 
-  if (digitalRead(blackButton) && clawPosition <= 175) {clawPosition += 5; writeCommand('C', clawPosition); }
-  if (digitalRead(whiteButton) && clawPosition >= 65)   {clawPosition -= 5; writeCommand('C', clawPosition); }
+  if (digitalRead(blackButton) && clawPosition <= 175) {
+		clawPosition += 5; 
+		writeCommand('C', clawPosition); 
+	}
+  if (digitalRead(whiteButton) && clawPosition >= 65) {
+		clawPosition -= 5; 
+		writeCommand('C', clawPosition); 
+	}
   claw.write(clawPosition);
 
   // Full, sudden release of claw when joystick pressed.
@@ -403,6 +412,7 @@ void loop() {
       setDisplay('S');
       delay(500);
     }
+		
     if (playbackProgram > 1 && horizontal < 300) {
       playbackProgram--;
       setName(playbackProgram);
@@ -411,15 +421,31 @@ void loop() {
     }
   }
   else {
-    if (vertical < 300 && vPos <= 130) {vPos += 2; writeCommand('V', vPos); }
-    if (vertical > 700 && vPos >= 18)  {vPos -= 2; writeCommand('V', vPos); }
+    if (vertical < 300 && vPos <= 130) {
+			vPos += 2; 
+			writeCommand('V', vPos); 
+		}
+    if (vertical > 700 && vPos >= 18) {
+			vPos -= 2; 
+			writeCommand('V', vPos); }
     vArm.write(vPos);
 
-    if (horizontal > 700 && hPos <= 130) {hPos += 2; writeCommand('H', hPos); }
-    if (horizontal < 300 && hPos >= 26)  {hPos -= 2; writeCommand('H', hPos); }
+    if (horizontal > 700 && hPos <= 130) {
+			hPos += 2; 
+			writeCommand('H', hPos); 
+		}
+    if (horizontal < 300 && hPos >= 26) {
+			hPos -= 2; 
+			writeCommand('H', hPos); 
+		}
     hArm.write(hPos);
   }
   
+	
+	
+	
+	
+	
   // IR code
   if (irrecv.decode(&results)) { 
   
