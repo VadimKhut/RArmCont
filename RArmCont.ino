@@ -228,6 +228,7 @@ void startSelect(){
   
   setName(playbackProgram);
   setDisplay('S');
+   
   delay(500);
 }
 
@@ -264,19 +265,22 @@ void setDisplay(char inMode) {
 
 void startPlayback(int in_playbackProgram) {
    
+ 	long int commandTime;
+	char commandType;
+	int commandParam;
+	char c1, c2;   // commas
+  long int fileLine = 0;
+	long int commandTimePrev = 0; 
+   
+    
   setName(in_playbackProgram);
   setDisplay('P');
   mode = 'P';
+   
   delay(1000);    
+   
   Serial.print("Playing back file ");
   Serial.println(name);
-
-  long int commandTime;
-  char commandType;
-  int commandParam;
-  char c1, c2;   // commas
-  long int fileLine = 0;
-  long int commandTimePrev = 0;
 
   ifstream sdin(name);
    
