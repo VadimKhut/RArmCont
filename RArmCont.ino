@@ -103,6 +103,9 @@ decode_results results;  // This will store our IR received codes
 uint16_t lastCode = 0;   // This keeps track of the last code RX'd
 
 
+
+
+
 void setup(){
    
   // make the SEL line an input
@@ -188,7 +191,9 @@ void startRecord(){
     myFile.print("0,B,"); myFile.println(basePos);
     myFile.print("0,C,"); myFile.println(clawPosition);
     myFile.close();
+     
     mode = 'R';
+     
     recStart = millis();
     setDisplay('R');
   }
@@ -201,6 +206,7 @@ void startSelect(){
   }
    
   mode = 'S';
+   
   // Find maximum program number
   for (uint8_t i = 0; i < 1000; i++) {
     setName(i);
